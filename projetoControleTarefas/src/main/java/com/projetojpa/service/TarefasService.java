@@ -1,0 +1,46 @@
+package com.projetojpa.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.projetojpa.entities.Tarefas;
+import com.projetojpa.repository.TarefasRepository;
+
+@Service
+public class TarefasService {
+	private final TarefasRepository tarefasRepository;
+	
+	@Autowired
+	   public TarefasService(TarefasRepository tarefasRepository) {
+        this.tarefasRepository = tarefasRepository;
+    }
+	public List<Tarefas> buscaTodosTarefas() {
+        return tarefasRepository.findAll();
+    }
+    public Tarefas buscaTarefasId(Long id) {
+    	Optional<Tarefas> Tarefas = tarefasRepository.findById(id);
+        return Tarefas.orElse(null);
+    }
+    public Tarefas salvaTarefas(Tarefas tarefas) {
+        return tarefasRepository.save(tarefas);
+    }
+    public Tarefas alterarTarefas (Long id, Tarefas alterarU) {
+		Optional <Tarefas> existeTarefas = tarefasRepository.findById(id);
+    	if (existeTarefas.isPresent()) {
+    		alterarU.setId(id);
+    		return tarefasRepository.save(alterarU);
+    	}
+    	return null;
+    }
+    public boolean apagarTarefas(Long id) {
+    	Optional <Tarefas> existeTarefas = tarefasRepository.findById(id);
+    	if (existeTarefas.isPresent()) {
+    		tarefasRepository.deleteById(id);
+    		return true;
+    	}
+    	return false;
+    }
+}
